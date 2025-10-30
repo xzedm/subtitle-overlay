@@ -1,0 +1,103 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║          REZKA SUPPORT - QUICK START GUIDE                        ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+✅ REZKA IS NOW FULLY SUPPORTED!
+
+Supported domains:
+  • rezka.fi ✅
+  • rezka.ag ✅  
+  • *.rezka.* (all Rezka domains) ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 3-STEP SETUP:
+
+1. RELOAD THE EXTENSION (IMPORTANT!)
+   
+   chrome://extensions/
+   ↓
+   Find "Subtitle Overlay Connector"
+   ↓
+   Click refresh button (⟳)
+
+2. START THE PYTHON APP
+   
+   python app/main.py
+
+3. GO TO REZKA AND TEST
+   
+   https://rezka.fi/films/fantasy/107-hobbit-nezhdannoe-puteshestvie-2012-latest.html
+   ↓
+   Press Ctrl+F5 (reload page)
+   ↓
+   Play video with subtitles ON
+   ↓
+   Subtitles appear in floating window! 🎉
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 VERIFICATION CHECKLIST:
+
+Before testing on Rezka:
+□ Extension reloaded in chrome://extensions/
+□ Python app running (see "WebSocket server started" message)
+□ System tray icon visible
+
+On Rezka page:
+□ Page reloaded (Ctrl+F5)
+□ Click extension icon → Shows "✓ Current page is supported"
+□ Click extension icon → Shows "✓ Connected to desktop app"
+
+Playing video:
+□ Video is playing
+□ Subtitles enabled on Rezka player
+□ Floating window visible
+□ Subtitles appearing in floating window!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 TROUBLESHOOTING:
+
+❌ "Not connected" on Rezka:
+   → Reload extension: chrome://extensions/ → refresh (⟳)
+   → Reload Rezka page: Ctrl+F5
+   → Test: Click extension icon → "Test Connection"
+
+❌ No subtitles appearing:
+   → Make sure subtitles are ON in Rezka player
+   → Press F12 → Console tab → Look for "Rezka subtitle detector activated"
+   → See REZKA_SETUP.md for advanced troubleshooting
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 WHAT'S NEW:
+
+• Dedicated Rezka subtitle detector
+• 7+ CSS selectors for different Rezka subtitle formats
+• HTML5 text track fallback
+• Automatic domain detection (*.rezka.*)
+• Console logging for debugging
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 DETAILED GUIDES:
+
+• REZKA_SETUP.md - Complete Rezka setup and troubleshooting
+• EXTENSION_GUIDE.md - General extension guide
+• ALL_FIXES_SUMMARY.md - Summary of all features
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ready to test? Run these commands:
+
+  python app/main.py
+
+Then open Rezka in your browser and reload the page!
+
+╔═══════════════════════════════════════════════════════════════════╗
+║  REMEMBER: Reload extension first, then reload Rezka page!       ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+
+

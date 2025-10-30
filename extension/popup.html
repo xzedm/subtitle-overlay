@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        width: 320px;
+        padding: 15px;
+        font-family: Arial, sans-serif;
+      }
+      .status {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+      .connected {
+        background-color: #00ff00;
+        animation: pulse 2s infinite;
+      }
+      .disconnected {
+        background-color: #ff0000;
+      }
+      .testing {
+        background-color: #ffa500;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      h3 {
+        margin-top: 0;
+      }
+      .info {
+        font-size: 12px;
+        color: #666;
+        margin-top: 10px;
+      }
+      button {
+        padding: 8px 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        width: 100%;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      .note {
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Subtitle Overlay</h3>
+    <div class="status">
+      <div class="indicator" id="indicator"></div>
+      <span id="statusText">Checking connection...</span>
+    </div>
+    
+    <button id="testBtn">Test Connection</button>
+    
+    <div class="info">
+      <p><strong>Server:</strong> ws://127.0.0.1:8765</p>
+      <p id="pageStatus"></p>
+    </div>
+    
+    <div class="note" id="note" style="display: none;">
+      ℹ️ The extension only works on streaming sites like Netflix, YouTube, Amazon Prime, etc.
+    </div>
+    
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subtitle Overlay - Connection Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-top: 0;
+    }
+    .status {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .status.connected {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    .status.disconnected {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    .status.testing {
+      background-color: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+    }
+    .indicator {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin-right: 10px;
+      display: inline-block;
+    }
+    .indicator.green { background-color: #28a745; }
+    .indicator.red { background-color: #dc3545; }
+    .indicator.orange { background-color: #ffc107; }
+    
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button.primary {
+      background-color: #007bff;
+      color: white;
+    }
+    button.primary:hover {
+      background-color: #0056b3;
+    }
+    button.success {
+      background-color: #28a745;
+      color: white;
+    }
+    button.success:hover {
+      background-color: #218838;
+    }
+    button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+    .log {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      padding: 15px;
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+    .log-entry {
+      margin: 5px 0;
+      padding: 5px;
+      border-left: 3px solid #007bff;
+      padding-left: 10px;
+    }
+    .log-entry.success {
+      border-left-color: #28a745;
+    }
+    .log-entry.error {
+      border-left-color: #dc3545;
+    }
+    .controls {
+      margin: 20px 0;
+    }
+    input[type="text"] {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      width: 400px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎬 Subtitle Overlay - Connection Test</h1>
+    
+    <div class="status disconnected" id="status">
+      <span class="indicator red" id="indicator"></span>
+      <span id="statusText">Not connected</span>
+    </div>
+    
+    <div class="controls">
+      <button class="primary" id="connectBtn" onclick="connect()">Connect to Desktop App</button>
+      <button class="primary" id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+      <button class="success" id="sendBtn" onclick="sendTestSubtitle()" disabled>Send Test Subtitle</button>
+    </div>
+    
+    <div>
+      <input type="text" id="customText" placeholder="Enter custom subtitle text..." value="This is a test subtitle! 🎉">
+      <button class="success" id="sendCustomBtn" onclick="sendCustomSubtitle()" disabled>Send Custom</button>
+    </div>
+    
+    <div class="log" id="log">
+      <div class="log-entry">Waiting to connect...</div>
+    </div>
+  </div>
+
+  <script>
+    let ws = null;
+    const statusDiv = document.getElementById('status');
+    const statusText = document.getElementById('statusText');
+    const indicator = document.getElementById('indicator');
+    const log = document.getElementById('log');
+    const connectBtn = document.getElementById('connectBtn');
+    const disconnectBtn = document.getElementById('disconnectBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const sendCustomBtn = document.getElementById('sendCustomBtn');
+    const customText = document.getElementById('customText');
+
+    function addLog(message, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      const timestamp = new Date().toLocaleTimeString();
+      entry.textContent = `[${timestamp}] ${message}`;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function updateStatus(connected, message) {
+      if (connected) {
+        statusDiv.className = 'status connected';
+        statusText.textContent = message || '✓ Connected to desktop app';
+        indicator.className = 'indicator green';
+        connectBtn.disabled = true;
+        disconnectBtn.disabled = false;
+        sendBtn.disabled = false;
+        sendCustomBtn.disabled = false;
+      } else {
+        statusDiv.className = 'status disconnected';
+        statusText.textContent = message || '❌ Not connected';
+        indicator.className = 'indicator red';
+        connectBtn.disabled = false;
+        disconnectBtn.disabled = true;
+        sendBtn.disabled = true;
+        sendCustomBtn.disabled = true;
+      }
+    }
+
+    function connect() {
+      addLog('Connecting to ws://127.0.0.1:8765...', 'info');
+      statusDiv.className = 'status testing';
+      statusText.textContent = 'Connecting...';
+      indicator.className = 'indicator orange';
+
+      try {
+        ws = new WebSocket('ws://127.0.0.1:8765');
+
+        ws.onopen = () => {
+          addLog('✅ Successfully connected to desktop app!', 'success');
+          updateStatus(true, '✓ Connected to desktop app');
+        };
+
+        ws.onmessage = (event) => {
+          addLog(`📩 Message from server: ${event.data}`, 'info');
+        };
+
+        ws.onerror = (error) => {
+          addLog('❌ WebSocket error occurred. Is the desktop app running?', 'error');
+          updateStatus(false, '❌ Connection error');
+        };
+
+        ws.onclose = () => {
+          addLog('🔌 Connection closed', 'info');
+          updateStatus(false, '❌ Disconnected');
+          ws = null;
+        };
+      } catch (error) {
+        addLog(`❌ Error: ${error.message}`, 'error');
+        updateStatus(false, '❌ Connection failed');
+      }
+    }
+
+    function disconnect() {
+      if (ws) {
+        ws.close();
+        addLog('Disconnecting...', 'info');
+      }
+    }
+
+    function sendTestSubtitle() {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        const message = {
+          type: 'subtitle',
+          text: 'Test subtitle from browser! 🎬',
+          timestamp: Date.now(),
+          url: window.location.href
+        };
+        ws.send(JSON.stringify(message));
+        addLog('📤 Sent test subtitle', 'success');
+      }
+    }
+
+    function sendCustomSubtitle() {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        const text = customText.value.trim();
+        if (text) {
+          const message = {
+            type: 'subtitle',
+            text: text,
+            timestamp: Date.now(),
+            url: window.location.href
+          };
+          ws.send(JSON.stringify(message));
+          addLog(`📤 Sent: "${text}"`, 'success');
+        }
+      }
+    }
+
+    // Auto-connect on page load
+    window.addEventListener('load', () => {
+      setTimeout(connect, 500);
+    });
+
+    // Allow Enter key to send custom subtitle
+    customText.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !sendCustomBtn.disabled) {
+        sendCustomSubtitle();
+      }
+    });
+  </script>
+</body>
+</html>
